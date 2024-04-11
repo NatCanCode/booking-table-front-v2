@@ -1,12 +1,14 @@
 // App.js
 import './App.css'
 import {useState, useEffect} from 'react';
+import { Link } from "react-router-dom";
 
 function App() {
 
   const [reservations, setReservations] = useState([]);
+  const [message, setMessage] = useState("");
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoyMSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEwNDI4MjY0LCJleHAiOjE3MTA0MzE4NjR9.fUJCHtwhB7ZE23LYUpvnRzBzQ8szTFlj6Hdlmld-qXw";
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVudkBnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEyODMwMjYzLCJleHAiOjE3MTI4MzM4NjN9.CdpzxnOdvuAXSwMx5KpXogY1cYilAgEofeHvDqDKFYQ"
 
   useEffect(() => {
     // fetch
@@ -18,19 +20,26 @@ function App() {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
-      setReservations(data.reservations)
+      console.log(data) 
+      if (data.auth == false) {
+        setMessage(data.message)
+      } else {
+        setReservations(data.reservations)
+      }
     })
 }, []);
 
   return (
     <>
       <h1>Simplon - REACT Frontend</h1>
+      <Link to="/signup">Signup</Link>
       <p className="paragraph">First part</p>
+      <p>{ message }</p>
       <ul className='reservationContainer'>
-        {reservations.map((r) => {
+        { !message && reservations.map((r) => {
           return (
             <li className='reservation' key={r.id}>
+              <div>Nombre de clients : {r.number_of_customers}</div>
               <div>Reservé par : {r.name}</div>
               <div>Note : {r.note}</div>
             </li>
